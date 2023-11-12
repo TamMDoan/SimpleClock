@@ -11,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-
 public class SimpleClock extends JFrame {
     
         Calendar calendar;
@@ -25,6 +24,12 @@ public class SimpleClock extends JFrame {
         String time;
         String day;
         String date;
+
+        JButton hoursButton;
+
+        static boolean hrs12 = true;
+        Thread thread1;
+        Thread thread2;
 
         SimpleClock() {
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,6 +58,20 @@ public class SimpleClock extends JFrame {
 
             // button 12/24hr
             JButton hoursButton = new JButton("12 / 24 HR");
+            hoursButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    hrs12 = !hrs12;
+                    if (hrs12) {
+                        thread2.interrupt();
+                        setTimer();
+
+                    } else {
+                        thread1.interrupt();
+                        setTimer24Hr();
+                    }
+                }
+            });
 
 
             this.add(timeLabel);
@@ -62,11 +81,14 @@ public class SimpleClock extends JFrame {
             this.setVisible(true);
     
             setTimer();
+
         }
+
     
         public void setTimer() {
-            Thread threadTest = new Thread(() -> {
-                while (true) {
+            timeFormat = new SimpleDateFormat("hh:mm:ss a");
+             thread1 = new Thread(() -> {
+                while (hrs12) {
                     //getTime() had local and GMT string methods. see if you can use that?
                     time = timeFormat.format(Calendar.getInstance().getTime());
                     timeLabel.setText(time);
@@ -76,7 +98,7 @@ public class SimpleClock extends JFrame {
 
                     date = dateFormat.format(Calendar.getInstance().getTime());
                     dateLabel.setText(date);
-
+                    System.out.println("thread 1");
                     try {
                         Thread.sleep(1000);
                     } catch (Exception e) {
@@ -85,7 +107,33 @@ public class SimpleClock extends JFrame {
                 }
             });
 
-            threadTest.start();
+            thread1.start();
+        }
+
+        public void setTimer24Hr(){
+            timeFormat = new SimpleDateFormat("HH:mm:ss a");
+            thread2 = new Thread(() -> {
+            while (!hrs12) {
+                //getTime() had local and GMT string methods. see if you can use that?
+                time = timeFormat.format(Calendar.getInstance().getTime());
+                timeLabel.setText(time);
+
+                day = dayFormat.format(Calendar.getInstance().getTime());
+                dayLabel.setText(day);
+
+                date = dateFormat.format(Calendar.getInstance().getTime());
+                dateLabel.setText(date);
+                System.out.println("thread 2");
+
+                try {
+                    Thread.sleep(1000);
+                } catch (Exception e) {
+                    e.getStackTrace();
+                }
+            }
+            });
+
+            thread2.start();
 
         }
         public static void main(String[] args) {

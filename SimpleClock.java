@@ -82,10 +82,10 @@ public class SimpleClock extends JFrame {
                     local = !local;
 
                     if(local) {
-                        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                        timeFormat.setTimeZone(TimeZone.getDefault());
                     }
                     else{
-                        timeFormat.setTimeZone(TimeZone.getDefault());
+                        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                     }
 
                 }
@@ -129,24 +129,24 @@ public class SimpleClock extends JFrame {
 
         public void setTimer24Hr(){
             thread2 = new Thread(() -> {
-            while (!hrs12) {
-                //getTime() had local and GMT string methods. see if you can use that?
-                time = timeFormat.format(Calendar.getInstance().getTime());
-                timeLabel.setText(time);
+                while (!hrs12) {
+                    //getTime() had local and GMT string methods. see if you can use that?
+                    time = timeFormat.format(Calendar.getInstance().getTime());
+                    timeLabel.setText(time);
 
-                day = dayFormat.format(Calendar.getInstance().getTime());
-                dayLabel.setText(day);
+                    day = dayFormat.format(Calendar.getInstance().getTime());
+                    dayLabel.setText(day);
 
-                date = dateFormat.format(Calendar.getInstance().getTime());
-                dateLabel.setText(date);
-                System.out.println("thread 2");
+                    date = dateFormat.format(Calendar.getInstance().getTime());
+                    dateLabel.setText(date);
+                    System.out.println("thread 2");
 
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.getStackTrace();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }
                 }
-            }
             });
 
             thread2.start();

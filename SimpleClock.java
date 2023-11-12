@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+import java.util.TimeZone;
 
 public class SimpleClock extends JFrame {
     
@@ -28,6 +29,7 @@ public class SimpleClock extends JFrame {
         JButton hoursButton;
 
         static boolean hrs12 = true;
+        static boolean local = true;
         Thread thread1;
         Thread thread2;
 
@@ -58,18 +60,34 @@ public class SimpleClock extends JFrame {
 
             // button 12/24hr
             JButton hoursButton = new JButton("12 / 24 HR");
-            hoursButton.addActionListener(new ActionListener() {
+            hoursButton.addActionListener(e -> {
+                hrs12 = !hrs12;
+                if (hrs12) {
+                    thread2.interrupt();
+                    timeFormat = new SimpleDateFormat("hh:mm:ss a");
+                    setTimer();
+
+                } else {
+                    thread1.interrupt();
+                    timeFormat = new SimpleDateFormat("HH:mm:ss a");
+                    setTimer24Hr();
+                }
+            });
+
+            // button local/GMT
+            JButton localGMT = new JButton("Local / GMT");
+            localGMT.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    hrs12 = !hrs12;
-                    if (hrs12) {
-                        thread2.interrupt();
-                        setTimer();
+                    local = !local;
 
-                    } else {
-                        thread1.interrupt();
-                        setTimer24Hr();
+                    if(local) {
+                        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                     }
+                    else{
+                        timeFormat.setTimeZone(TimeZone.getDefault());
+                    }
+
                 }
             });
 
@@ -78,15 +96,14 @@ public class SimpleClock extends JFrame {
             this.add(dayLabel);
             this.add(dateLabel);
             this.add(hoursButton);
+            this.add(localGMT);
             this.setVisible(true);
     
             setTimer();
 
         }
 
-    
         public void setTimer() {
-            timeFormat = new SimpleDateFormat("hh:mm:ss a");
              thread1 = new Thread(() -> {
                 while (hrs12) {
                     //getTime() had local and GMT string methods. see if you can use that?
@@ -111,7 +128,6 @@ public class SimpleClock extends JFrame {
         }
 
         public void setTimer24Hr(){
-            timeFormat = new SimpleDateFormat("HH:mm:ss a");
             thread2 = new Thread(() -> {
             while (!hrs12) {
                 //getTime() had local and GMT string methods. see if you can use that?

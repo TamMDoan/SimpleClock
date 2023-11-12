@@ -65,24 +65,28 @@ public class SimpleClock extends JFrame {
         }
     
         public void setTimer() {
-            Thread threadTest = new Thread();
-            while (true) {
+            Thread threadTest = new Thread(() -> {
+                while (true) {
+                    //getTime() had local and GMT string methods. see if you can use that?
+                    time = timeFormat.format(Calendar.getInstance().getTime());
+                    timeLabel.setText(time);
 
-                time = timeFormat.format(Calendar.getInstance().getTime());
-                timeLabel.setText(time);
-    
-                day = dayFormat.format(Calendar.getInstance().getTime());
-                dayLabel.setText(day);
-    
-                date = dateFormat.format(Calendar.getInstance().getTime());
-                dateLabel.setText(date);
-    
-                try {
-                    Thread.sleep(1000);
-                } catch (Exception e) {
-                    e.getStackTrace();
+                    day = dayFormat.format(Calendar.getInstance().getTime());
+                    dayLabel.setText(day);
+
+                    date = dateFormat.format(Calendar.getInstance().getTime());
+                    dateLabel.setText(date);
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }
                 }
-            }
+            });
+
+            threadTest.start();
+
         }
         public static void main(String[] args) {
             new SimpleClock();

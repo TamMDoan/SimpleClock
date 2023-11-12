@@ -1,9 +1,15 @@
 //package SimpleClock;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 
 public class SimpleClock extends JFrame {
@@ -24,7 +30,7 @@ public class SimpleClock extends JFrame {
             this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             this.setTitle("Digital Clock");
             this.setLayout(new FlowLayout());
-            this.setSize(350, 220);
+            this.setSize(450, 320);
             this.setResizable(false);
     
             timeFormat = new SimpleDateFormat("hh:mm:ss a");
@@ -40,18 +46,28 @@ public class SimpleClock extends JFrame {
     
             dateLabel=new JLabel();
             dateLabel.setFont(new Font("Ink Free",Font.BOLD,30));
-    
-    
+
+            // margins... isn't this more like padding?
+            Border margin = new EmptyBorder(30, 30, 30, 30);
+            timeLabel.setBorder(margin);
+
+            // button 12/24hr
+            JButton hoursButton = new JButton("12 / 24 HR");
+
+
             this.add(timeLabel);
             this.add(dayLabel);
             this.add(dateLabel);
+            this.add(hoursButton);
             this.setVisible(true);
     
             setTimer();
         }
     
         public void setTimer() {
+            Thread threadTest = new Thread();
             while (true) {
+
                 time = timeFormat.format(Calendar.getInstance().getTime());
                 timeLabel.setText(time);
     

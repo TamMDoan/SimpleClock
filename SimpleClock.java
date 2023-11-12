@@ -76,19 +76,9 @@ public class SimpleClock extends JFrame {
 
             // button local/GMT
             JButton localGMT = new JButton("Local / GMT");
-            localGMT.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    local = !local;
+            localGMT.addActionListener(e -> {
+                local = !local;
 
-                    if(local) {
-                        timeFormat.setTimeZone(TimeZone.getDefault());
-                    }
-                    else{
-                        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-                    }
-
-                }
             });
 
 
@@ -106,6 +96,12 @@ public class SimpleClock extends JFrame {
         public void setTimer() {
              thread1 = new Thread(() -> {
                 while (hrs12) {
+                    if(local){
+                        timeFormat.setTimeZone(TimeZone.getDefault());
+                    }
+                    else{
+                        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    }
                     //getTime() had local and GMT string methods. see if you can use that?
                     time = timeFormat.format(Calendar.getInstance().getTime());
                     timeLabel.setText(time);
@@ -128,8 +124,15 @@ public class SimpleClock extends JFrame {
         }
 
         public void setTimer24Hr(){
+
             thread2 = new Thread(() -> {
                 while (!hrs12) {
+                    if(local){
+                        timeFormat.setTimeZone(TimeZone.getDefault());
+                    }
+                    else{
+                        timeFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    }
                     //getTime() had local and GMT string methods. see if you can use that?
                     time = timeFormat.format(Calendar.getInstance().getTime());
                     timeLabel.setText(time);
